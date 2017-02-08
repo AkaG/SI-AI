@@ -26,7 +26,9 @@ public class JS_PS_Player extends Player {
 
     @Override
     public Move nextMove(Board b) {
-        Node ret = alfaBeta(b, 12, Integer.MIN_VALUE, Integer.MAX_VALUE, this.getColor());
+        int depth = b.getSize() < 20 ? 18 - b.getSize()/2 : 15 - b.getSize() / 2;
+        depth = max(depth, 3);
+        Node ret = alfaBeta(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, this.getColor());
 
         if(ret.getMove() == null){
             Random generator = new Random();
