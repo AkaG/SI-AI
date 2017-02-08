@@ -59,7 +59,7 @@ public class JS_PS_Player extends Player {
                 for (int j = 0; j < board.getSize(); j++) {
                     if(board.getState(i,j) == Color.PLAYER1) {
 //                        result -= sqrt(abs(i - (board.getSize() - (j + 1))));
-                        result -= result += sqrt(abs(board.getSize() - (i + j + 1)));
+                        result -= sqrt(abs(board.getSize() - (i + j + 1)));
                     }
                 }
             }
