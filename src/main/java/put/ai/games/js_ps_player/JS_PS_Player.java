@@ -16,8 +16,9 @@ import static java.lang.Math.*;
 
 public class JS_PS_Player extends Player {
 
-    private int MAX_EVAL = 1000;
-    private int MOVE_COST_POW = 3;
+    private int MAX_EVAL = 10000;
+    private int MOVE_COST_POW = 2;
+    private int DIAGONAL_DIST_POW = 2;
 
     @Override
     public String getName() {
@@ -48,17 +49,14 @@ public class JS_PS_Player extends Player {
         //max player
         if (currPlayer == Color.PLAYER1) {
             if (maxPlayer.size() == 0)
-                return -MAX_EVAL;
-            if (minPlayer.size() == 0)
-                return MAX_EVAL;
+                result -= MAX_EVAL;
 
             result -= pow(minPlayer.size(), MOVE_COST_POW);
 
             for (int i = 0; i < board.getSize(); i++) {
                 for (int j = 0; j < board.getSize(); j++) {
                     if (board.getState(i, j) == Color.PLAYER1) {
-//                        result -= sqrt(abs(i - (board.getSize() - (j + 1))));
-                        result -= pow(abs(board.getSize() - (i + j + 2)), 2);
+                        result -= pow(abs(board.getSize() - (i + j + 1)), DIAGONAL_DIST_POW);
                     }
                 }
             }
@@ -66,16 +64,13 @@ public class JS_PS_Player extends Player {
         } else { // min player
             if (minPlayer.size() == 0)
                 return MAX_EVAL;
-            if (maxPlayer.size() == 0)
-                return -MAX_EVAL;
 
             result += pow(maxPlayer.size(), MOVE_COST_POW);
 
             for (int i = 0; i < board.getSize(); i++) {
                 for (int j = 0; j < board.getSize(); j++) {
                     if (board.getState(i, j) == Color.PLAYER2) {
-//                        result += sqrt(abs(board.getSize() - (i + j + 1)));
-                        result += pow(abs(i - (board.getSize() - (j + 2))), 2);
+                        result += pow(abs((board.getSize() - (i+1)) - j), DIAGONAL_DIST_POW);
                     }
                 }
             }
@@ -134,39 +129,30 @@ public class JS_PS_Player extends Player {
     }
 
     private boolean isTerminalState(Board b) {
-        if (b.getMovesFor(Color.PLAYER1).size() == 0 || b.getMovesFor(Color.PLAYER2).size() == 0)
-            return true;
-        return false;
-    }
-
-    public List<Node> createNodeList(List<Move> moves) {
-        List<Node> nodes = new ArrayList<>();
-        for (Move m : moves)
-            nodes.add(new Node(m));
-        return nodes;
+        return b.getMovesFor(Color.PLAYER1).size() == 0 || b.getMovesFor(Color.PLAYER2).size() == 0;
     }
 
     class Node {
-        public long value = 0;
+        long value = 0;
         private Move move;
 
-        public Node() {
+        Node() {
         }
 
         public Node(Move move) {
             this.move = move;
         }
 
-        public Node(long value, Move move) {
+        Node(long value, Move move) {
             this.value = value;
             this.move = move;
         }
 
-        public Move getMove() {
+        Move getMove() {
             return move;
         }
 
-        public void setMove(Move move) {
+        void setMove(Move move) {
             this.move = move;
         }
     }
